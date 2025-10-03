@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencarian Siswa TKA 2025 - SMAN 1 CIBARUSAH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            padding: 2px;
+            border-radius: 12px;
+        }
+        .gradient-border-inner {
+            background: white;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 min-h-screen relative overflow-x-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+    <div class="absolute top-0 left-0 w-full h-full">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+        <div class="absolute top-40 right-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="flex flex-col items-center mb-6">
+                <div class="mb-6">
+                    <img src="https://iili.io/K1DqCs2.png" alt="Logo SMAN 1 CIBARUSAH" class="w-24 h-24 object-contain mx-auto drop-shadow-lg" onerror="this.style.display='none';">
+                </div>
+                <h1 class="text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mb-3">
+                    Pencarian Siswa TKA 2025
+                </h1>
+                <h2 class="text-3xl font-semibold text-white mb-2">SMAN 1 CIBARUSAH</h2>
+                <p class="text-blue-100 text-lg">Sistem Informasi Peserta Tes Kompetensi Akademik</p>
+            </div>
+            
+            <!-- Database Status -->
+            <div class="mb-6 flex justify-center">
+                <div id="dbStatus" class="inline-flex items-center gap-3 px-6 py-3 rounded-full shadow-lg transition-all duration-300">
+                    <div id="dbStatusIndicator" class="w-3 h-3 rounded-full"></div>
+                    <span id="dbStatusText" class="font-medium text-sm">Memeriksa koneksi...</span>
+                    <span id="dbStatusDetails" class="text-xs opacity-75"></span>
+                </div>
+            </div>
+            
+            <div class="flex justify-center space-x-2">
+                <div class="w-8 h-1 bg-blue-500 rounded-full"></div>
+                <div class="w-8 h-1 bg-purple-500 rounded-full"></div>
+                <div class="w-8 h-1 bg-indigo-500 rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="gradient-border card-hover mb-8">
+            <div class="gradient-border-inner p-8">
+                <div class="flex flex-col md:flex-row gap-6 items-end">
+                    <div class="flex-1">
+                        <label for="searchInput" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">🔍</span>
+                            <span>Cari berdasarkan Nama, NISN, atau Nomor Induk</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Masukkan nama siswa, NISN, atau nomor induk..."
+                            class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 text-lg shadow-sm"
+                        >
+                    </div>
+                    <button 
+                        id="searchBtn" 
+                        class="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-semibold flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                        <span id="searchBtnText">Cari Siswa</span>
+                        <div id="loadingSpinner" class="hidden w-5 h-5 border-2 border-white border-t-transparent rounded-full loading"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="statusMessage" class="hidden mb-6 p-4 rounded-xl shadow-lg"></div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-white/20">
+                <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">📋</span>
+                        <div>
+                            <h3 class="text-2xl font-bold">Hasil Pencarian</h3>
+                            <p id="resultCount" class="text-blue-100 text-sm font-medium"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div id="resultsList" class="space-y-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12">
+            <div class="bg-white/30 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+                <p class="text-white font-medium">SMAN 1 CIBARUSAH © 2025</p>
+                <p class="text-blue-100 text-sm mt-1">Create by @kang322 - Dikembangkan dengan ❤️</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let studentsData = [];
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyB-y0Sh963iVwXV_0tb2Uz_2Rp7om3fyRrAmSO-H2UCOeSm7HTkia5LlErJWa_aXnvBA/exec';
+        
+        // Update database status
+        function updateDatabaseStatus(status, message, details = '') {
+            const dbStatus = document.getElementById('dbStatus');
+            const indicator = document.getElementById('dbStatusIndicator');
+            const text = document.getElementById('dbStatusText');
+            const detailsSpan = document.getElementById('dbStatusDetails');
+            
+            // Remove all status classes
+            dbStatus.className = 'inline-flex items-center gap-3 px-6 py-3 rounded-full shadow-lg transition-all duration-300';
+            indicator.className = 'w-3 h-3 rounded-full';
+            
+            switch(status) {
+                case 'connecting':
+                    dbStatus.classList.add('bg-yellow-100', 'border', 'border-yellow-200');
+                    indicator.classList.add('bg-yellow-500', 'animate-pulse');
+                    text.textContent = message;
+                    text.className = 'font-medium text-sm text-yellow-800';
+                    break;
+                case 'connected':
+                    dbStatus.classList.add('bg-green-100', 'border', 'border-green-200');
+                    indicator.classList.add('bg-green-500');
+                    text.textContent = message;
+                    text.className = 'font-medium text-sm text-green-800';
+                    break;
+                case 'error':
+                    dbStatus.classList.add('bg-red-100', 'border', 'border-red-200');
+                    indicator.classList.add('bg-red-500');
+                    text.textContent = message;
+                    text.className = 'font-medium text-sm text-red-800';
+                    break;
+                case 'offline':
+                    dbStatus.classList.add('bg-gray-100', 'border', 'border-gray-200');
+                    indicator.classList.add('bg-gray-500');
+                    text.textContent = message;
+                    text.className = 'font-medium text-sm text-gray-800';
+                    break;
+            }
+            
+            detailsSpan.textContent = details;
+            detailsSpan.className = `text-xs opacity-75 ${
+                status === 'connected' ? 'text-green-600' :
+                status === 'error' ? 'text-red-600' :
+                status === 'connecting' ? 'text-yellow-600' :
+                'text-gray-600'
+            }`;
+        }
+        
+        // Load data from Google Sheets via Apps Script
+        async function loadStudentsData() {
+            try {
+                updateDatabaseStatus('connecting', 'Menghubungkan ke database...', 'Memuat data siswa');
+                showStatus('Memuat data siswa dari server...', 'info');
+                
+                const startTime = Date.now();
+                const response = await fetch(`${API_URL}?action=getAllStudents`);
+                const result = await response.json();
+                const loadTime = Date.now() - startTime;
+                
+                if (result.success) {
+                    // Convert object format to array format for compatibility
+                    studentsData = result.data.map((student, index) => [
+                        student['No'] || index + 1,
+                        student['Nama Peserta'] || '',
+                        student['NISN'] || '',
+                        student['Nomor Induk'] || '',
+                        student['KELAS'] || '',
+                        student['WALAS'] || '',
+                        student['Keikutsertaan'] || '',
+                        student['Mata Pelajaran Pilihan 1'] || '',
+                        student['Mata Pelajaran Pilihan 2'] || '',
+                        student['Program Studi/Keahlian'] || '',
+                        student['Jenis Kelamin (L/P)'] || '',
+                        student['Tempat Lahir'] || '',
+                        student['Tanggal Lahir'] || '',
+                        student['Username'] || '',
+                        student['Kode Server'] || '',
+                        student['Nama Ruang'] || '',
+                        student['Gelombang'] || '',
+                        student['Sesi  Hari ke-1'] || '',
+                        student['Sesi  Hari ke-2'] || '',
+                        student['Sekolah Asal'] || ''
+                    ]);
+                    
+                    updateDatabaseStatus('connected', 'Database Terhubung', `${result.total} siswa • ${loadTime}ms`);
+                    showStatus(`Data ${result.total} siswa berhasil dimuat! Silakan lakukan pencarian.`, 'success');
+                } else {
+                    throw new Error(result.message || 'Gagal memuat data');
+                }
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                updateDatabaseStatus('error', 'Koneksi Gagal', 'Tidak dapat mengakses database');
+                showStatus('Gagal memuat data dari server. Silakan coba lagi nanti.', 'error');
+                studentsData = [];
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = `mb-6 p-6 rounded-xl shadow-lg border-l-4 ${
+                type === 'success' ? 'bg-green-50 text-green-800 border-green-400' :
+                type === 'error' ? 'bg-red-50 text-red-800 border-red-400' :
+                type === 'warning' ? 'bg-yellow-50 text-yellow-800 border-yellow-400' :
+                'bg-blue-50 text-blue-800 border-blue-400'
+            }`;
+            statusDiv.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">
+                        ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
+                    </span>
+                    <span class="font-medium">${message}</span>
+                </div>
+            `;
+            statusDiv.classList.remove('hidden');
+            
+            if (type === 'success' || type === 'info') {
+                setTimeout(() => {
+                    statusDiv.classList.add('hidden');
+                }, 4000);
+            }
+        }
+
+        async function searchStudents() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                showStatus('Silakan masukkan kata kunci pencarian.', 'warning');
+                return;
+            }
+
+            // Show loading state
+            const searchBtn = document.getElementById('searchBtn');
+            const searchBtnText = document.getElementById('searchBtnText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            searchBtn.disabled = true;
+            searchBtnText.textContent = 'Mencari...';
+            loadingSpinner.classList.remove('hidden');
+
+            try {
+                // Search using Apps Script API
+                const response = await fetch(`${API_URL}?action=searchStudents&query=${encodeURIComponent(searchTerm)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Convert object format to array format for compatibility
+                    const results = result.data.map((student, index) => [
+                        student['No'] || index + 1,
+                        student['Nama Peserta'] || '',
+                        student['NISN'] || '',
+                        student['Nomor Induk'] || '',
+                        student['KELAS'] || '',
+                        student['WALAS'] || '',
+                        student['Keikutsertaan'] || '',
+                        student['Mata Pelajaran Pilihan 1'] || '',
+                        student['Mata Pelajaran Pilihan 2'] || '',
+                        student['Program Studi/Keahlian'] || '',
+                        student['Jenis Kelamin (L/P)'] || '',
+                        student['Tempat Lahir'] || '',
+                        student['Tanggal Lahir'] || '',
+                        student['Username'] || '',
+                        student['Kode Server'] || '',
+                        student['Nama Ruang'] || '',
+                        student['Gelombang'] || '',
+                        student['Sesi  Hari ke-1'] || '',
+                        student['Sesi  Hari ke-2'] || '',
+                        student['Sekolah Asal'] || ''
+                    ]);
+                    
+                    displayResults(results);
+                } else {
+                    showStatus(result.message || 'Pencarian gagal', 'error');
+                    document.getElementById('resultsSection').classList.add('hidden');
+                }
+                
+            } catch (error) {
+                console.error('Search error:', error);
+                showStatus('Terjadi kesalahan saat mencari. Silakan coba lagi.', 'error');
+                document.getElementById('resultsSection').classList.add('hidden');
+            } finally {
+                // Reset button state
+                searchBtn.disabled = false;
+                searchBtnText.textContent = 'Cari Siswa';
+                loadingSpinner.classList.add('hidden');
+            }
+        }
+
+        function displayResults(results) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsList = document.getElementById('resultsList');
+            const resultCount = document.getElementById('resultCount');
+
+            if (results.length === 0) {
+                showStatus('Tidak ada siswa yang ditemukan dengan kata kunci tersebut.', 'warning');
+                resultsSection.classList.add('hidden');
+                return;
+            }
+
+            resultCount.textContent = `Ditemukan ${results.length} siswa`;
+            
+            resultsList.innerHTML = results.map((student, index) => `
+                <div class="bg-white/90 rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 fade-in card-hover">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <h4 class="text-xl font-bold text-blue-900 mb-2">${student[1]}</h4>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    Kelas : ${student[4]}
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    ${student[6]}
+                                </span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
+                                    student[10] === 'L' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
+                                }">
+                                    ${student[10]}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm font-medium text-gray-500">No. ${student[0]}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <div class="space-y-2">
+                            <div><span class="font-semibold text-gray-600">NISN:</span> <span class="font-mono text-gray-800">${student[2]}</span></div>
+                            <div><span class="font-semibold text-gray-600">No. Induk:</span> <span class="font-mono text-gray-800">${student[3]}</span></div>
+                            <div><span class="font-semibold text-gray-600">Walas:</span> <span class="text-gray-800">${student[5]}</span></div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div><span class="font-semibold text-gray-600">Tempat Lahir:</span> <span class="text-gray-800">${student[11]}</span></div>
+                            <div><span class="font-semibold text-gray-600">Tanggal Lahir:</span> <span class="text-gray-800">${student[12]}</span></div>
+                            <div><span class="font-semibold text-gray-600">Program Studi:</span> <span class="text-gray-800">${student[9]}</span></div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div><span class="font-semibold text-gray-600">Mapel Pilihan 1:</span> <span class="text-gray-800">${student[7]}</span></div>
+                            <div><span class="font-semibold text-gray-600">Mapel Pilihan 2:</span> <span class="text-gray-800">${student[8]}</span></div>
+                            <div><span class="font-semibold text-gray-600">Sekolah Asal:</span> <span class="text-gray-800">${student[19]}</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex flex-wrap gap-2">
+                            <div class="inline-flex items-center gap-2 px-3 py-2 bg-indigo-100 text-indigo-800 rounded-lg text-sm font-medium">
+                                <span class="text-xs">👤</span>
+                                <span class="font-semibold">Username:</span>
+                                <span class="font-mono bg-indigo-200 px-2 py-1 rounded">${student[13]}</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-2 bg-cyan-100 text-cyan-800 rounded-lg text-sm font-medium">
+                                <span class="text-xs">🖥️</span>
+                                <span class="font-semibold">Server:</span>
+                                <span class="font-mono">${student[14]}</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-2 bg-orange-100 text-orange-800 rounded-lg text-sm font-medium">
+                                <span class="text-xs">🏢</span>
+                                <span class="font-semibold">Ruang:</span>
+                                <span>${student[15]}</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 text-emerald-800 rounded-lg text-sm font-medium">
+                                <span class="text-xs">⏰</span>
+                                <span class="font-semibold">Sesi Hari ke-1:</span>
+                                <span>${student[17]}</span>
+                                <span class="mx-1">|</span>
+                                <span class="font-semibold">Sesi Hari ke-2:</span>
+                                <span>${student[18]}</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 px-3 py-2 bg-purple-100 text-purple-800 rounded-lg text-sm font-medium">
+                                <span class="text-xs">🌊</span>
+                                <span class="font-semibold">Gelombang:</span>
+                                <span>${student[16]}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            resultsSection.classList.remove('hidden');
+            showStatus(`Berhasil menemukan ${results.length} siswa!`, 'success');
+        }
+
+        // Event listeners
+        document.getElementById('searchBtn').addEventListener('click', searchStudents);
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchStudents();
+            }
+        });
+
+        // Initialize database status
+        function initializeDatabaseStatus() {
+            updateDatabaseStatus('connecting', 'Memeriksa koneksi...', 'Menginisialisasi sistem');
+        }
+
+        // Load data when page loads
+        window.addEventListener('load', () => {
+            initializeDatabaseStatus();
+            loadStudentsData();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'988b89ec302dcb36',t:'MTc1OTQ4NTA2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
